@@ -469,6 +469,15 @@ export default function PacmanGame() {
 
   // Helper to change direction (used by keys and touch buttons)
   const changeDirection = (dir: 'up' | 'down' | 'left' | 'right') => {
+    // Start or restart game if necessary
+    if (!started) {
+      setStarted(true);
+    }
+    if (gameOver) {
+      resetGame();
+      setStarted(true);
+    }
+
     switch (dir) {
       case 'up':
         pacman.current.dy = -PAC_SPEED;
@@ -532,6 +541,7 @@ export default function PacmanGame() {
             aria-label="Up"
             className={controlBtnClass}
             onTouchStart={() => changeDirection('up')}
+            onClick={() => changeDirection('up')}
           >
             ↑
           </button>
@@ -540,6 +550,7 @@ export default function PacmanGame() {
             aria-label="Left"
             className={controlBtnClass}
             onTouchStart={() => changeDirection('left')}
+            onClick={() => changeDirection('left')}
           >
             ←
           </button>
@@ -547,6 +558,7 @@ export default function PacmanGame() {
             aria-label="Down"
             className={controlBtnClass}
             onTouchStart={() => changeDirection('down')}
+            onClick={() => changeDirection('down')}
           >
             ↓
           </button>
@@ -554,6 +566,7 @@ export default function PacmanGame() {
             aria-label="Right"
             className={controlBtnClass}
             onTouchStart={() => changeDirection('right')}
+            onClick={() => changeDirection('right')}
           >
             →
           </button>
