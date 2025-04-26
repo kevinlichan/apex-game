@@ -21,6 +21,7 @@ export default function PacmanGame() {
   const [score, setScore] = useState(0);
   const [started, setStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   /* ---------- Game constants ----------- */
   const width = 500;
@@ -185,23 +186,19 @@ export default function PacmanGame() {
       switch (code) {
         case 'ArrowUp':
         case 'KeyW':
-          pacman.current.dy = -PAC_SPEED;
-          pacman.current.dx = 0;
+          changeDirection('up');
           break;
         case 'ArrowDown':
         case 'KeyS':
-          pacman.current.dy = PAC_SPEED;
-          pacman.current.dx = 0;
+          changeDirection('down');
           break;
         case 'ArrowLeft':
         case 'KeyA':
-          pacman.current.dx = -PAC_SPEED;
-          pacman.current.dy = 0;
+          changeDirection('left');
           break;
         case 'ArrowRight':
         case 'KeyD':
-          pacman.current.dx = PAC_SPEED;
-          pacman.current.dy = 0;
+          changeDirection('right');
           break;
       }
     };
@@ -463,6 +460,38 @@ export default function PacmanGame() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started, gameOver]);
 
+  // Detect mobile device once on mount
+  useEffect(() => {
+    if (typeof navigator !== 'undefined') {
+      setIsMobile(/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
+    }
+  }, []);
+
+  // Helper to change direction (used by keys and touch buttons)
+  const changeDirection = (dir: 'up' | 'down' | 'left' | 'right') => {
+    switch (dir) {
+      case 'up':
+        pacman.current.dy = -PAC_SPEED;
+        pacman.current.dx = 0;
+        break;
+      case 'down':
+        pacman.current.dy = PAC_SPEED;
+        pacman.current.dx = 0;
+        break;
+      case 'left':
+        pacman.current.dx = -PAC_SPEED;
+        pacman.current.dy = 0;
+        break;
+      case 'right':
+        pacman.current.dx = PAC_SPEED;
+        pacman.current.dy = 0;
+        break;
+    }
+  };
+
+  const controlBtnClass =
+    'bg-gray-700/80 text-white w-12 h-12 rounded flex items-center justify-center text-xl active:bg-gray-900';
+
   /* ---------- React render ----------- */
   return (
     <div className="flex flex-col items-center gap-4">
@@ -496,6 +525,40 @@ export default function PacmanGame() {
           </div>
         )}
       </div>
+      {isMobile && (
+        <div className="mt-4 grid grid-cols-3 gap-2 w-40">
+          <div></div>
+          <button
+            aria-label="Up"
+            className={controlBtnClass}
+            onTouchStart={() => changeDirection('up')}
+          >
+            ↑
+          </button>
+          <div></div>
+          <button
+            aria-label="Left"
+            className={controlBtnClass}
+            onTouchStart={() => changeDirection('left')}
+          >
+            ←
+          </button>
+          <button
+            aria-label="Down"
+            className={controlBtnClass}
+            onTouchStart={() => changeDirection('down')}
+          >
+            ↓
+          </button>
+          <button
+            aria-label="Right"
+            className={controlBtnClass}
+            onTouchStart={() => changeDirection('right')}
+          >
+            →
+          </button>
+        </div>
+      )}
     </div>
   );
 } 
